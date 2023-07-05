@@ -1,4 +1,8 @@
 ﻿namespace ConstructingACar_3_v2;
+
+public delegate void EngineStartEventHandler();
+public delegate void DrivingEventHandler();
+
 public class DrivingProcessor : IDrivingProcessor
 {
     private const int MAX_BREAKING = 10;
@@ -7,14 +11,49 @@ public class DrivingProcessor : IDrivingProcessor
     private int maxAcceleration = 10;
     private int actualSpeed = 0;
 
-    public double ActualConsumption { get; }
+    public event EngineStartEventHandler engineStartEvent;
+    public event DrivingEventHandler DrivingEvent;
+
+    public double ActualConsumption
+    {
+        get
+        {
+            switch (ActualSpeed)
+            {
+                case < 1:
+                    return Engine.IDLE_FUEL_CONSUMPTION_PER_SEC;
+                case >= 1 and <= 60:
+                    return 0.0020;
+                case >= 61 and <= 100:
+                    return 0.0014;
+                case >= 101 and <= 140:
+                    return 0.0020;
+                case >= 141 and <= 200:
+                    return 0.0025;
+                case >= 201 and <= 250:
+                    return 0.0030;
+                default:
+                    return 0.0020;
+            }
+        }
+    }
+
+    public double PreviousConsumption { get; set; } = 0;
+
+    public bool EngineIsRunning
+    {
+        get;
+        set;
+    }
 
     public int ActualSpeed
     {
         get => actualSpeed;
         set
         {
+            PreviousConsumption = ActualConsumption;
             actualSpeed = Math.Clamp(value, 0, MAX_SPEED);
+            DrivingEvent();
         }
     }
 
@@ -32,14 +71,17 @@ public class DrivingProcessor : IDrivingProcessor
     {
         MaxAcceleration = maxAcceleration;
     }
+
     public void EngineStart()
     {
-        throw new NotImplementedException();
+        engineStartEvent();
+        PreviousConsumption = 0;
+        EngineIsRunning = true;
     }
 
     public void EngineStop()
     {
-        throw new NotImplementedException();
+        EngineIsRunning = false;
     }
 
     public void IncreaseSpeedTo(int speed)
@@ -51,6 +93,11 @@ public class DrivingProcessor : IDrivingProcessor
     {
         speed = Math.Clamp(speed, 0, MAX_BREAKING);
         ActualSpeed -= speed;
+
+        if (speed == 1)
+        {
+            PreviousConsumption = 0;
+        }
     }
 
     public void AccelerateTo(int speed)
@@ -58,5 +105,11 @@ public class DrivingProcessor : IDrivingProcessor
         speed -= ActualSpeed;
         speed = Math.Clamp(speed, 0, MaxAcceleration);
         IncreaseSpeedTo(ActualSpeed + speed);
+    }
+
+    public void RunningIdle()
+    {
+        DrivingEvent();
+        PreviousConsumption = ActualConsumption;
     }
 }

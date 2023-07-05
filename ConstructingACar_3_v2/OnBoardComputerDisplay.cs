@@ -4,22 +4,22 @@ public class OnBoardComputerDisplay : IOnBoardComputerDisplay
 {
     private OnBoardComputer onBoardComputer;
 
-    public int TripRealTime { get; }
-    public int TripDrivingTime { get; }
-    public double TripDrivenDistance { get; }
-    public int TotalRealTime { get; }
-    public int TotalDrivingTime { get; }
-    public double TotalDrivenDistance { get; }
-    public int ActualSpeed { get; }
-    public double TripAverageSpeed { get; }
-    public double TotalAverageSpeed { get; }
-    public double ActualConsumptionByTime { get; }
-    public double ActualConsumptionByDistance { get; }
-    public double TripAverageConsumptionByTime { get; }
-    public double TotalAverageConsumptionByTime { get; }
+    public int TripRealTime => onBoardComputer.TripRealTime;
+    public int TripDrivingTime => onBoardComputer.TripDrivingTime;
+    public double TripDrivenDistance => Math.Round(onBoardComputer.TripDrivenDistanceDouble, 2);
+    public int TotalRealTime => onBoardComputer.TotalRealTime;
+    public int TotalDrivingTime => onBoardComputer.TotalDrivingTime;
+    public double TotalDrivenDistance => Math.Round(onBoardComputer.TotalDrivenDistanceDouble, 2);
+    public int ActualSpeed => onBoardComputer.ActualSpeed;
+    public double TripAverageSpeed => Math.Round(onBoardComputer.TripAverageSpeed, 1);
+    public double TotalAverageSpeed => Math.Round(onBoardComputer.TotalAverageSpeed, 1);
+    public double ActualConsumptionByTime => Math.Round(onBoardComputer.ActualConsumptionByTime, 5);
+    public double ActualConsumptionByDistance => Math.Round(onBoardComputer.ActualConsumptionByDistance, 1);
+    public double TripAverageConsumptionByTime => Math.Round(onBoardComputer.TripAverageConsumptionByTime, 5);
+    public double TotalAverageConsumptionByTime => Math.Round(onBoardComputer.TotalAverageConsumptionByTime, 5);
     public double TripAverageConsumptionByDistance { get; }
     public double TotalAverageConsumptionByDistance { get; }
-    public int EstimatedRange { get; }
+    public int EstimatedRange => onBoardComputer.EstimatedRange;
 
     public OnBoardComputerDisplay(OnBoardComputer onBoardComputer)
     {
@@ -28,11 +28,11 @@ public class OnBoardComputerDisplay : IOnBoardComputerDisplay
 
     public void TripReset()
     {
-        throw new NotImplementedException();
+        onBoardComputer.TripReset();
     }
 
     public void TotalReset()
     {
-        throw new NotImplementedException();
+        onBoardComputer.TotalReset();
     }
 }

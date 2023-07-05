@@ -22,7 +22,7 @@ public class Car : ICar
         drivingProcessor = new DrivingProcessor();
         drivingInformationDisplay = new DrivingInformationDisplay(drivingProcessor);
 
-        onBoardComputer = new OnBoardComputer(drivingProcessor);
+        onBoardComputer = new OnBoardComputer(drivingProcessor, fuelTank);
         onBoardComputerDisplay = new OnBoardComputerDisplay(onBoardComputer);
     }
 
@@ -59,43 +59,19 @@ public class Car : ICar
         //101 - 140 km/h-> 0.0020 liter/second
         //141 - 200 km/h-> 0.0025 liter/second
         //201 - 250 km/h-> 0.0030 liter/second
-        double fuelConsumption;
-        switch (drivingProcessor.ActualSpeed)
-        {
-            case < 1:
-                fuelConsumption = Engine.IDLE_FUEL_CONSUMPTION_PER_SEC;
-                break;
-            case >= 1 and <= 60:
-                fuelConsumption = 0.0020;
-                break;
-            case >= 61 and <= 100:
-                fuelConsumption = 0.0014;
-                break;
-            case >= 101 and <= 140:
-                fuelConsumption = 0.0020;
-                break;
-            case >= 141 and <= 200:
-                fuelConsumption = 0.0025;
-                break;
-            case >= 201 and <= 250:
-                fuelConsumption = 0.0030;
-                break;
-            default:
-                fuelConsumption = 0.0020;
-                break;
-        }
-
-        engine.Consume(fuelConsumption);
+        engine.Consume(drivingProcessor.ActualConsumption);
     }
 
     public void EngineStart()
     {
         this.engine.Start();
+        this.drivingProcessor.EngineStart();
     }
 
     public void EngineStop()
     {
         this.engine.Stop();
+        this.drivingProcessor.EngineStop();
     }
 
     public void FreeWheel()
@@ -118,5 +94,6 @@ public class Car : ICar
     public void RunningIdle()
     {
         this.engine.Consume(Engine.IDLE_FUEL_CONSUMPTION_PER_SEC);
+        this.drivingProcessor.RunningIdle();
     }
 }
