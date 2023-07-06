@@ -1,0 +1,218 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace AStar_Performance
+{
+    public class AStar_HashSet
+    {
+        class Tile
+        {
+            public int X { get; set; }
+            public int Y { get; set; }
+            public int Cost { get; set; } // Tiles traveled from to start to get to the current tile
+            public int Distance { get; set; } // Distance to the destination without walls
+            public int CostDistance { get; set; }
+
+            public void SetDistance(Tile target)
+            {
+                this.Distance = Math.Abs(target.X - X) + Math.Abs(target.Y - Y);
+            }
+        }
+
+        public static bool PathFinder(string maze)
+        {
+            const int visitedCharacter = -1;
+            const int wallCharacter = 1;
+
+            if (maze.Length <= 1)
+            {
+                return true;
+            }
+
+            // Convert map (CHANGED)
+            int mapSize = (int)Math.Ceiling(Math.Sqrt(maze.Length));
+            int[,] map = new int[mapSize, mapSize];
+
+            for (int i = 0; i < maze.Length; i++)
+            {
+                int row = i / mapSize;
+                int col = i % mapSize;
+                map[row, col] = maze[i] == 'W' ? wallCharacter : 0;
+            }
+
+            Tile start = new Tile() { X = 0, Y = 0 };
+            Tile finish = new Tile() { X = mapSize - 1, Y = mapSize - 1 };
+            start.SetDistance(finish);
+
+            var openList = new HashSet<Tile> { start };
+
+            while (openList.Count() > 0)
+            {
+                Tile checkTile = openList.MinBy(tile => tile.CostDistance);
+                openList.Remove(checkTile);
+                map[checkTile.Y, checkTile.X] = visitedCharacter;
+
+                if (checkTile.Equals(finish))
+                {
+                    // Finish reached
+                    return true;
+                }
+
+                var walkableTiles = GetWalkableTiles(map, checkTile, finish);
+
+                foreach (var walkableTile in walkableTiles)
+                {
+                    //It's already in the active list, but that's OK, maybe this new tile has a shorter path to it
+                    if (openList.Contains(walkableTile))
+                    {
+                        foreach (Tile tile in walkableTiles)
+                        {
+                            if (tile.Equals(walkableTile))
+                            {
+                                Tile existingTile = tile;
+
+                                if (existingTile.CostDistance > checkTile.CostDistance)
+                                {
+                                    openList.Remove(existingTile);
+                                    openList.Add(walkableTile);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Its a new tile
+                        openList.Add(walkableTile);
+                    }
+                }
+            }
+
+            return false;
+
+
+            // ========== LOCAL FUNCTIONS ==========
+
+            List<Tile> GetWalkableTiles(int[,] map, Tile currentTile, Tile targetTile)
+            {
+                var possibleTiles = new List<Tile>()
+                    {
+                        new Tile { X = currentTile.X, Y = currentTile.Y - 1, Cost = currentTile.Cost + 1 },
+                        new Tile { X = currentTile.X, Y = currentTile.Y + 1, Cost = currentTile.Cost + 1},
+                        new Tile { X = currentTile.X - 1, Y = currentTile.Y, Cost = currentTile.Cost + 1 },
+                        new Tile { X = currentTile.X + 1, Y = currentTile.Y, Cost = currentTile.Cost + 1 },
+                    };
+
+                List<Tile> walkable = new List<Tile>();
+
+                foreach (Tile tile in possibleTiles)
+                {
+                    if (
+                        (tile.X >= 0 && tile.X < mapSize)
+                        && (tile.Y >= 0 && tile.Y < mapSize)
+                        && map[tile.Y, tile.X] != wallCharacter
+                        && map[tile.Y, tile.X] != visitedCharacter
+                    )
+                        walkable.Add(tile);
+                }
+
+                return walkable;
+            }
+        }
+
+        public static bool MinorChanges(string maze)
+
+        {
+            const int visitedCharacter = -1;
+            const int wallCharacter = 1;
+
+            if (maze.Length <= 1)
+            {
+                return true;
+            }
+
+            // Convert map (CHANGED)
+            int mapSize = (int)Math.Ceiling(Math.Sqrt(maze.Length));
+            int[,] map = new int[mapSize, mapSize];
+
+            for (int i = 0; i < maze.Length; i++)
+            {
+                int row = i / mapSize;
+                int col = i % mapSize;
+                map[row, col] = maze[i] == 'W' ? wallCharacter : 0;
+            }
+
+            Tile start = new Tile() { X = 0, Y = 0 };
+            Tile finish = new Tile() { X = mapSize - 1, Y = mapSize - 1 };
+            start.SetDistance(finish);
+
+            var openList = new HashSet<Tile> { start };
+
+            while (openList.Count() > 0)
+            {
+                Tile checkTile = openList.MinBy(tile => tile.CostDistance);
+                openList.Remove(checkTile);
+                map[checkTile.Y, checkTile.X] = visitedCharacter;
+
+                if (checkTile.Equals(finish))
+                {
+                    // Finish reached
+                    return true;
+                }
+
+                var walkableTiles = GetWalkableTiles(map, checkTile, finish);
+
+                foreach (var walkableTile in walkableTiles)
+                {
+                    //It's already in the active list, but that's OK, maybe this new tile has a shorter path to it
+                    if (openList.Contains(walkableTile))
+                    {
+                        Tile existingTile = openList.Single(tile => tile.Equals(walkableTile));
+                        if (existingTile.CostDistance > checkTile.CostDistance)
+                        {
+                            openList.Remove(existingTile);
+                            openList.Add(walkableTile);
+                        }
+                    }
+                    else
+                    {
+                        openList.Add(walkableTile);
+                    }
+                }
+            }
+
+            return false;
+
+
+            // ========== LOCAL FUNCTIONS ==========
+
+            List<Tile> GetWalkableTiles(int[,] map, Tile currentTile, Tile targetTile)
+            {
+                var possibleTiles = new Tile[]
+                    {
+                        new Tile { X = currentTile.X, Y = currentTile.Y - 1, Cost = currentTile.Cost + 1 },
+                        new Tile { X = currentTile.X, Y = currentTile.Y + 1, Cost = currentTile.Cost + 1},
+                        new Tile { X = currentTile.X - 1, Y = currentTile.Y, Cost = currentTile.Cost + 1 },
+                        new Tile { X = currentTile.X + 1, Y = currentTile.Y, Cost = currentTile.Cost + 1 },
+                    };
+
+                List<Tile> walkable = new List<Tile>();
+
+                foreach (Tile tile in possibleTiles)
+                {
+                    if (
+                        (tile.X >= 0 && tile.X < mapSize)
+                        && (tile.Y >= 0 && tile.Y < mapSize)
+                        && map[tile.Y, tile.X] != wallCharacter
+                        && map[tile.Y, tile.X] != visitedCharacter
+                    )
+                        walkable.Add(tile);
+                }
+
+                return walkable;
+            }
+        }
+    }
+}
