@@ -17,8 +17,8 @@ public class OnBoardComputerDisplay : IOnBoardComputerDisplay
     public double ActualConsumptionByDistance => Math.Round(onBoardComputer.ActualConsumptionByDistance, 1);
     public double TripAverageConsumptionByTime => Math.Round(onBoardComputer.TripAverageConsumptionByTime, 5);
     public double TotalAverageConsumptionByTime => Math.Round(onBoardComputer.TotalAverageConsumptionByTime, 5);
-    public double TripAverageConsumptionByDistance { get; }
-    public double TotalAverageConsumptionByDistance { get; }
+    public double TripAverageConsumptionByDistance => Math.Round(onBoardComputer.TripAverageConsumptionByDistance, 1);
+    public double TotalAverageConsumptionByDistance => Math.Round(onBoardComputer.TotalAverageConsumptionByDistance, 1);
     public int EstimatedRange => onBoardComputer.EstimatedRange;
 
     public OnBoardComputerDisplay(OnBoardComputer onBoardComputer)

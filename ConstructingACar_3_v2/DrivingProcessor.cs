@@ -10,6 +10,7 @@ public class DrivingProcessor : IDrivingProcessor
 
     private int maxAcceleration = 10;
     private int actualSpeed = 0;
+    private bool noFuelUsage = false;
 
     public event EngineStartEventHandler engineStartEvent;
     public event DrivingEventHandler DrivingEvent;
@@ -18,6 +19,8 @@ public class DrivingProcessor : IDrivingProcessor
     {
         get
         {
+            if (noFuelUsage) return 0;
+
             switch (ActualSpeed)
             {
                 case < 1:
@@ -37,9 +40,7 @@ public class DrivingProcessor : IDrivingProcessor
             }
         }
     }
-
-    public double PreviousConsumption { get; set; } = 0;
-
+    
     public bool EngineIsRunning
     {
         get;
@@ -51,7 +52,6 @@ public class DrivingProcessor : IDrivingProcessor
         get => actualSpeed;
         set
         {
-            PreviousConsumption = ActualConsumption;
             actualSpeed = Math.Clamp(value, 0, MAX_SPEED);
             DrivingEvent();
         }
@@ -74,9 +74,9 @@ public class DrivingProcessor : IDrivingProcessor
 
     public void EngineStart()
     {
-        engineStartEvent();
-        PreviousConsumption = 0;
         EngineIsRunning = true;
+        noFuelUsage = true;
+        engineStartEvent();
     }
 
     public void EngineStop()
@@ -91,17 +91,14 @@ public class DrivingProcessor : IDrivingProcessor
 
     public void ReduceSpeed(int speed)
     {
+        noFuelUsage = true;
         speed = Math.Clamp(speed, 0, MAX_BREAKING);
         ActualSpeed -= speed;
-
-        if (speed == 1)
-        {
-            PreviousConsumption = 0;
-        }
     }
 
     public void AccelerateTo(int speed)
     {
+        noFuelUsage = false;
         speed -= ActualSpeed;
         speed = Math.Clamp(speed, 0, MaxAcceleration);
         IncreaseSpeedTo(ActualSpeed + speed);
@@ -109,7 +106,7 @@ public class DrivingProcessor : IDrivingProcessor
 
     public void RunningIdle()
     {
+        noFuelUsage = false;
         DrivingEvent();
-        PreviousConsumption = ActualConsumption;
     }
 }

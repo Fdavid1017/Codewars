@@ -25,7 +25,7 @@ public class OnBoardComputer : IOnBoardComputer
     public double TotalAverageSpeed => (double)totalSpeedSum / TotalDrivingTime;
 
     public int ActualSpeed => drivingProcessor.ActualSpeed;
-    public double ActualConsumptionByTime => drivingProcessor.PreviousConsumption;
+    public double ActualConsumptionByTime => drivingProcessor.ActualConsumption;
 
     public double ActualConsumptionByDistance
     {
@@ -35,18 +35,35 @@ public class OnBoardComputer : IOnBoardComputer
             {
                 // Fuel consumption = Fuel used / Distance traveled
                 // 0,0014/0,278*1000
-                double kmTraveled = Math.Round(drivingProcessor.ActualSpeed * ONE_KMH_IN_MPERS) / 1000d;
-                return drivingProcessor.PreviousConsumption / kmTraveled * 100;
+                //  double kmTraveled = Math.Round(drivingProcessor.ActualSpeed * ONE_KMH_IN_MPERS) / 1000d;
+                //   return drivingProcessor.PreviousConsumption / kmTraveled * 100;
+                return drivingProcessor.ActualConsumption / drivingProcessor.ActualSpeed * 3600 * 100;
             }
 
             return double.NaN;
         }
     }
 
-    public double TripAverageConsumptionByTime => tripConsumptionSum / TripRealTime;
-    public double TotalAverageConsumptionByTime => totalConsumptionSum / TotalRealTime;
-    public double TripAverageConsumptionByDistance { get; }
-    public double TotalAverageConsumptionByDistance { get; }
+    public double TripAverageConsumptionByTime
+    {
+        get
+        {
+            if (tripConsumptionSum == 0 || TripRealTime == 0) return 0;
+            return tripConsumptionSum / TripRealTime;
+        }
+    }
+
+    public double TotalAverageConsumptionByTime
+    {
+        get
+        {
+            if (totalConsumptionSum == 0 || TotalRealTime == 0) return 0;
+            return totalConsumptionSum / TotalRealTime;
+        }
+    }
+
+    public double TripAverageConsumptionByDistance { get; set; }
+    public double TotalAverageConsumptionByDistance { get; set; }
 
     public int EstimatedRange
     {
@@ -69,6 +86,8 @@ public class OnBoardComputer : IOnBoardComputer
 
     public void ElapseSecond()
     {
+        if (!drivingProcessor.EngineIsRunning) return;
+
         TripRealTime++;
         TotalRealTime++;
 
@@ -86,6 +105,9 @@ public class OnBoardComputer : IOnBoardComputer
             double drivenDistance = drivingProcessor.ActualSpeed * 0.000278;
             TripDrivenDistanceDouble += drivenDistance;
             TotalDrivenDistanceDouble += drivenDistance;
+
+            TripAverageConsumptionByDistance -= ((TripAverageConsumptionByDistance - ActualConsumptionByDistance) / TripDrivingTime);
+            TotalAverageConsumptionByDistance -= ((TotalAverageConsumptionByDistance - ActualConsumptionByDistance) / TotalDrivingTime);
         }
     }
 
@@ -96,8 +118,11 @@ public class OnBoardComputer : IOnBoardComputer
 
         tripSpeedSum = 0;
         TripDrivenDistance = 0;
+        TripDrivenDistanceDouble = 0;
 
         tripConsumptionSum = 0;
+
+        TripAverageConsumptionByDistance = 0;
     }
 
     public void TotalReset()
@@ -106,8 +131,10 @@ public class OnBoardComputer : IOnBoardComputer
         TotalDrivingTime = 0;
 
         totalSpeedSum = 0;
-        TotalDrivenDistance = 0;
+        TotalDrivenDistanceDouble = 0;
 
         totalConsumptionSum = 0;
+
+        TotalAverageConsumptionByDistance = 0;
     }
 }
