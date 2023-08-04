@@ -1,6 +1,8 @@
-namespace PathFinder1_V2
+namespace WumpusWorld
 {
-    public class Finder
+    // https://www.codewars.com/kata/625c70f8a071210030c8e22a
+
+    public static class WumpusWorld
     {
         class Tile
         {
@@ -17,7 +19,7 @@ namespace PathFinder1_V2
             }
         }
 
-        public static bool PathFinder(string maze)
+        public static bool Solve(char[][] maze)
         {
             const int visitedCharacter = -1;
             const int wallCharacter = 1;
@@ -28,23 +30,42 @@ namespace PathFinder1_V2
             }
 
             // Convert map
-            string[] rows = maze.Split("\n");
 
-            int[][] map = new int[rows.Length][];
+            int[][] map = new int[maze.Length][];
             int mapSize = map.Length;
 
-            for (int i = 0; i < rows.Length; i++)
+            Tile? finish = null;
+
+            for (int i = 0; i < maze.Length; i++)
             {
-                int[] rowItems = new int[rows.Length];
-                for (int j = 0; j < rows[i].Length; j++)
+                int[] rowItems = new int[maze[i].Length - (i == maze.Length - 1 ? 0 : 1)];
+                for (int j = 0; j < rowItems.Length; j++)
                 {
-                    rowItems[j] = rows[i][j] == 'W' ? 1 : 0;
+                    if (maze[i][j] == '\r') { continue; }
+
+                    if (maze[i][j] == 'P')
+                    {
+                        rowItems[j] = wallCharacter;
+                    }
+                    else
+                    {
+                        rowItems[j] = 0;
+                    }
+
+                    if (maze[i][j] == 'G')
+                    {
+                        finish = new Tile() { X = j, Y = i };
+                    }
                 }
                 map[i] = rowItems;
             }
 
+            if (finish == null)
+            {
+                return false;
+            }
+
             Tile start = new Tile() { X = 0, Y = 0 };
-            Tile finish = new Tile() { X = mapSize - 1, Y = mapSize - 1 };
             start.SetDistance(finish);
 
             PriorityQueue<Tile, int> openList = new PriorityQueue<Tile, int>();
@@ -102,37 +123,128 @@ namespace PathFinder1_V2
                 return walkable;
             }
         }
+    }
 
-        [Test]
-        public void sampleTests()
+    [TestFixture(Description = "Wumpus World")]
+    public class SolutionTest
+    {
+        const bool VERBOSE = true;
+
+        void Act(char[][] cave, bool expected)
         {
-
-            string a = ".W.\n" +
-                       ".W.\n" +
-                       "...",
-
-                   b = ".W.\n" +
-                       ".W.\n" +
-                       "W..",
-
-                   c = "......\n" +
-                       "......\n" +
-                       "......\n" +
-                       "......\n" +
-                       "......\n" +
-                       "......",
-
-                   d = "......\n" +
-                       "......\n" +
-                       "......\n" +
-                       "......\n" +
-                       ".....W\n" +
-                       "....W.";
-
-            Assert.AreEqual(true, Finder.PathFinder(a));
-            Assert.AreEqual(false, Finder.PathFinder(b));
-            Assert.AreEqual(true, Finder.PathFinder(c));
-            Assert.AreEqual(false, Finder.PathFinder(d));
+            if (VERBOSE) Console.WriteLine($"{Stringify(cave)}\n");
+            var userSolution = WumpusWorld.Solve(Copy(cave));
+            var msg = $"Failed to predict the outcome for cave:\n\n{Stringify(cave)}\n";
+            Assert.AreEqual(expected, userSolution, msg);
         }
+
+        void Act(string cave, bool expected) => Act(ParseCave(cave), expected);
+        char[][] ParseCave(string s) => Rasterize(s).Skip(1).ToArray();
+        char[][] Rasterize(string s) => s.Split("\n").Select(r => r.ToCharArray()).ToArray();
+        T[][] Copy<T>(T[][] matrix) => matrix.Select(r => r.ToArray()).ToArray();
+        string Stringify(char[][] matrix) => string.Join("\n", matrix.Select(r => string.Concat(r)));
+
+        [Test(Description = "Sample Tests")]
+        [TestCase(@"
+____
+_W__
+___G
+P___", true)]
+        [TestCase(@"
+____
+_P__
+____
+_W_G", true)]
+        [TestCase(@"
+____
+____
+W__P
+__PG", false)]
+        [TestCase(@"
+__GP
+_P__
+W___
+____", true)]
+        [TestCase(@"
+__W_
+____
+___P
+___G", true)]
+        [TestCase(@"
+__W_
+____
+__PP
+___G", true)]
+        [TestCase(@"
+__W_
+____
+_PPP
+___G", true)]
+        [TestCase(@"
+___P
+__PG
+___P
+W___", false)]
+        [TestCase(@"
+__P_
+____
+__P_
+__WG", true)]
+        [TestCase(@"
+____
+__PW
+PG__
+____", true)]
+        [TestCase(@"
+__P_
+____
+WP__
+_G__", true)]
+        [TestCase(@"
+__PG
+____
+__WP
+____", true)]
+        [TestCase(@"
+___W
+__P_
+__G_
+P___", true)]
+        [TestCase(@"
+__WP
+_P__
+____
+_G__", true)]
+        [TestCase(@"
+__WP
+____
+__P_
+P_G_", true)]
+        [TestCase(@"
+__PG
+___W
+__PP
+____", true)]
+        [TestCase(@"
+__P_
+____
+__G_
+PP_W", true)]
+        [TestCase(@"
+____
+____
+_P_P
+_GWP", true)]
+        [TestCase(@"
+___P
+____
+P__P
+__GW", true)]
+        [TestCase(@"
+__WP
+____
+P__P
+___G", true)]
+        public void Scenario(string cave, bool expected) => Act(cave, expected);
     }
 }

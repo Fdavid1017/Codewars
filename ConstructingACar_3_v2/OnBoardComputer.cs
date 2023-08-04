@@ -69,7 +69,16 @@ public class OnBoardComputer : IOnBoardComputer
     {
         get
         {
-            double kmPerLiter = ActualConsumptionByDistance / 100;
+            double kmPerLiter;
+            if (this.TripDrivingTime < 100)
+            {
+                kmPerLiter = 4.8 / 100;
+            }
+            else
+            {
+                kmPerLiter = ActualConsumptionByDistance / 100;
+            }
+
             return (int)Math.Round(fuelTank.FillLevel / kmPerLiter);
         }
     }
