@@ -93,9 +93,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bagels", "Bagels\Bagels.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WumpusWorld", "WumpusWorld\WumpusWorld.csproj", "{ECB48455-5EDA-44FD-8F7F-4390329A6B6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentCalculator", "FluentCalculator\FluentCalculator.csproj", "{F313D69E-AF71-4836-9167-B3598D6AC8A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentCalculator", "FluentCalculator\FluentCalculator.csproj", "{F313D69E-AF71-4836-9167-B3598D6AC8A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BEDMASCalculator", "BEDMASCalculator\BEDMASCalculator.csproj", "{48AA0265-1C61-44A1-AF63-939D6283A3F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BEDMASCalculator", "BEDMASCalculator\BEDMASCalculator.csproj", "{48AA0265-1C61-44A1-AF63-939D6283A3F9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TopDownMovementSystem", "TopDownMovementSystem\TopDownMovementSystem.csproj", "{2263749A-AE1C-4186-9868-3A22D4D73C57}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RgbToHex", "RgbToHex\RgbToHex.csproj", "{D05F2B5D-9C85-4EA9-8138-F52AC3953C6A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BattleshipFieldValidator", "BattleshipFieldValidator\BattleshipFieldValidator.csproj", "{57D43EFF-AA98-490F-ADB0-89F60C59A5CD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodewarsStyleRanking", "CodewarsStyleRanking\CodewarsStyleRanking.csproj", "{80568333-CAED-48B5-A5E9-56A0CC76B90C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RangeExtraction", "RangeExtraction\RangeExtraction.csproj", "{16ED81E3-DEAD-44E8-8CA6-FD04BA281FBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -291,6 +301,26 @@ Global
 		{48AA0265-1C61-44A1-AF63-939D6283A3F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48AA0265-1C61-44A1-AF63-939D6283A3F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48AA0265-1C61-44A1-AF63-939D6283A3F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2263749A-AE1C-4186-9868-3A22D4D73C57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2263749A-AE1C-4186-9868-3A22D4D73C57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2263749A-AE1C-4186-9868-3A22D4D73C57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2263749A-AE1C-4186-9868-3A22D4D73C57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D05F2B5D-9C85-4EA9-8138-F52AC3953C6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D05F2B5D-9C85-4EA9-8138-F52AC3953C6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D05F2B5D-9C85-4EA9-8138-F52AC3953C6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D05F2B5D-9C85-4EA9-8138-F52AC3953C6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57D43EFF-AA98-490F-ADB0-89F60C59A5CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57D43EFF-AA98-490F-ADB0-89F60C59A5CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57D43EFF-AA98-490F-ADB0-89F60C59A5CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57D43EFF-AA98-490F-ADB0-89F60C59A5CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80568333-CAED-48B5-A5E9-56A0CC76B90C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80568333-CAED-48B5-A5E9-56A0CC76B90C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80568333-CAED-48B5-A5E9-56A0CC76B90C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80568333-CAED-48B5-A5E9-56A0CC76B90C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16ED81E3-DEAD-44E8-8CA6-FD04BA281FBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16ED81E3-DEAD-44E8-8CA6-FD04BA281FBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16ED81E3-DEAD-44E8-8CA6-FD04BA281FBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16ED81E3-DEAD-44E8-8CA6-FD04BA281FBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
