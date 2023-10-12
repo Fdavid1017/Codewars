@@ -44,14 +44,15 @@ public class OnBoardComputer : IOnBoardComputer
         }
     }
 
-    public double TripAverageConsumptionByTime
-    {
-        get
-        {
-            if (tripConsumptionSum == 0 || TripRealTime == 0) return 0;
-            return tripConsumptionSum / TripRealTime;
-        }
-    }
+    private double avgConsumptionByTime = 0;
+    public double TripAverageConsumptionByTime => avgConsumptionByTime;
+    //{
+    //    get
+    //    {
+    //        if (tripConsumptionSum == 0 || TripRealTime == 0) return 0;
+    //        return tripConsumptionSum / (double)TripRealTime;
+    //    }
+    //}
 
     public double TotalAverageConsumptionByTime
     {
@@ -89,8 +90,8 @@ public class OnBoardComputer : IOnBoardComputer
         this.drivingProcessor = drivingProcessor;
         this.drivingProcessor.engineStartEvent += this.TripReset;
         this.drivingProcessor.engineStartEvent += this.ElapseSecond;
-
         this.drivingProcessor.DrivingEvent += this.ElapseSecond;
+        this.fuelTank.RefuelEvent += this.ElapseSecond;
     }
 
     public void ElapseSecond()
@@ -117,6 +118,16 @@ public class OnBoardComputer : IOnBoardComputer
 
             TripAverageConsumptionByDistance -= ((TripAverageConsumptionByDistance - ActualConsumptionByDistance) / TripDrivingTime);
             TotalAverageConsumptionByDistance -= ((TotalAverageConsumptionByDistance - ActualConsumptionByDistance) / TotalDrivingTime);
+        }
+
+        // avgConsumptionByTime -= (avgConsumptionByTime - drivingProcessor.ActualConsumption) / TripDrivingTime;
+
+        avgConsumptionByTime = avgConsumptionByTime
+                               - ((avgConsumptionByTime - drivingProcessor.ActualConsumption) / TripDrivingTime);
+
+        if (double.IsNaN(avgConsumptionByTime))
+        {
+            avgConsumptionByTime = 0;
         }
     }
 

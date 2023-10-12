@@ -1,9 +1,12 @@
 ﻿namespace ConstructingACar_3_v2;
 
+public delegate void RefuelEventHandler();
+
 public class FuelTank : IFuelTank
 {
     public const double MAX_FUEL_LEVEL = 60;
     public const double FUEL_TANK_RESERVE_LIMIT = 5;
+    public event RefuelEventHandler RefuelEvent;
 
     private double fillLevel = 20;
     public double FillLevel
@@ -24,5 +27,6 @@ public class FuelTank : IFuelTank
     public void Refuel(double liters)
     {
         this.FillLevel += liters;
+        RefuelEvent();
     }
 }
