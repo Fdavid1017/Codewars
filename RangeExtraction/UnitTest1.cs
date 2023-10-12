@@ -7,41 +7,40 @@ namespace RangeExtraction
         public static string Extract(int[] args)
         {
             List<string> ranges = new List<string>();
-
-            int? rangeStart = args[0];
-            int rangeEnd = args[1];
-
-            for (int i = 1; i < args.Length; i++)
+            int? start = null;
+            for (int i = 0; i < args.Length; i++)
             {
-                if (!rangeStart.HasValue)
+                if (i + 1 < args.Length && args[i] - args[i + 1] == -1)
                 {
-                    rangeStart = args[i];
-                    continue;
-                }
-
-                rangeEnd = args[i];
-                if (args.Length == i + 1 || Math.Abs(rangeEnd - args[i + 1]) > 1)
-                {
-                    // Not in range with the next item
-                    if (Math.Abs(rangeStart.Value - rangeEnd) == 1 || args[i - 1] == rangeStart)
-                    {
-                        // No element between start and end OR not a range with the previous item
-                        ranges.Add($"{rangeStart},{rangeEnd}");
-                    }
-                    else
-                    {
-                        ranges.Add($"{rangeStart}-{rangeEnd}");
-                    }
-                    rangeStart = null;
+                    // Next is in interval
+                    if (start == null)
+                        start = args[i];
                 }
                 else
                 {
-                    // In range with previous item
+                    // Next isnt in interval
+                    ranges.Add(FormatIntervalText(start, args[i]));
+                    start = null;
                 }
             }
-
-
+            
             return string.Join(",", ranges);
+        }
+
+        private static string FormatIntervalText(int? start, int current)
+        {
+            if (start == null)
+            {
+                return current.ToString();
+            }
+            else if (start - current != -1)
+            {
+                return $"{start}-{current}";
+            }
+            else
+            {
+                return $"{start},{current}";
+            }
         }
 
         [TestFixture]
